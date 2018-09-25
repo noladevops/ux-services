@@ -1,0 +1,16 @@
+# build environment
+FROM node:alpine
+RUN mkdir /usr/src/app
+WORKDIR /usr/src/app
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+COPY package.json /usr/src/app/package.json
+RUN npm install --silent
+RUN npm install react-scripts@1.1.1 -g --silent
+COPY . /usr/src/app
+RUN npm run build
+
+
+FROM nginx:alpine
+COPY --from=0 /app/build/ /usr/share/nginx/html
+# Copy the default nginx.conf provided by tiangolo/node-frontend
+COPY --from=0 /nginx.conf /etc/nginx/conf.d/default.conf
