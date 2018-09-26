@@ -20,11 +20,9 @@ const fs = require ('fs');
 const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
 
-console.log("Hey there");
+const mqttTopic =  `devices/cloud-display/events/flight-data-feed`;
+const configTopic = `/devices/nolab-display/config`;
 
-// Create a Cloud IoT Core JWT for the given project id, signed with the given
-// private key.
-// [START iot_mqtt_jwt]
 function createJwt (projectId, privateKeyFile, algorithm) {
   // Create a JWT to authenticate this device. The device will be disconnected
   // after the token expires, and will have to reconnect with a new token. The
@@ -37,13 +35,7 @@ function createJwt (projectId, privateKeyFile, algorithm) {
   const privateKey = fs.readFileSync(privateKeyFile);
   return jwt.sign(token, privateKey, { algorithm: algorithm });
 }
-// [END iot_mqtt_jwt]
-// [START iot_mqtt_run]
 
-// With Google Cloud IoT Core, the username field is ignored, however it must be
-// non-empty. The password field is used to transmit a JWT to authorize the
-// device. The "mqtts" protocol causes the library to connect using SSL, which
-// is required for Cloud IoT Core.
 let connectionArgs = {
   host: 'mqtt.googleapis.com',
   port: '8883',
@@ -59,14 +51,20 @@ let iatTime = parseInt(Date.now() / 1000);
 let client = mqtt.connect(connectionArgs);
 
 // Subscribe to the /devices/{device-id}/config topic to receive config updates.
-client.subscribe(`/devices/nolab-display/config`, {qos: 1});
-client.subscribe(`/projects/nolab-io/subscriptions/telemetry`,{qos:1}, (err,granted)=> { console.log(err); });
+client.subscribe(configTopic, {qos: 0});
+client.subscribe(telemetryTopic,{qos:1}, (err,granted)=> {
+  if (!err) {
+    console.log(err);
+  } else {
+    console.log(granted);
+  }
+});
 
 // The MQTT topic that this device will publish data to. The MQTT
 // topic name is required to be in the format below. The topic name must end in
 // 'state' to publish state and 'events' to publish telemetry. Note that this is
 // not the same as the device registry's Cloud Pub/Sub topic.
-const mqttTopic =  `devices/cloud-display/events/flight-data-feed`;
+
 
 
 client.on('connect', (success) => {
@@ -86,7 +84,7 @@ client.on('connect', (success) => {
 //	console.log(err);
     //  }
     //});
-  
+
 });
 
 client.on('close', () => {
@@ -112,5 +110,3 @@ client.on('packetsend', () => {
 // The mqttClientId is a unique string that identifies this device. For Google
 // Cloud IoT Core, it must be in the format below.
 const mqttClientId = `projects/nolab-io/locations/us-central1/registries/nolab-io/devices/nolab-display`;
-
-
