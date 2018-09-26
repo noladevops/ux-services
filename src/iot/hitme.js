@@ -60,25 +60,38 @@ let client = mqtt.connect(connectionArgs);
 
 // Subscribe to the /devices/{device-id}/config topic to receive config updates.
 client.subscribe(`/devices/nolab-display/config`, {qos: 1});
+client.subscribe(`/projects/nolab-io/subscriptions/telemetry`,{qos:1}, (err,granted)=> { console.log(err); });
 
 // The MQTT topic that this device will publish data to. The MQTT
 // topic name is required to be in the format below. The topic name must end in
 // 'state' to publish state and 'events' to publish telemetry. Note that this is
 // not the same as the device registry's Cloud Pub/Sub topic.
-const mqttTopic = `/devices/nolab-display/info-stream`;
+const mqttTopic =  `devices/cloud-display/events/flight-data-feed`;
+
 
 client.on('connect', (success) => {
   console.log('connect');
   if (!success) {
     console.log('Client not connected...');
-  } else if (!publishChainInProgress) {
-    publishAsync(1, argv.numMessages);
   }
+    //const payload = `nolab-io/nolab-display-payload-`+ JSON.stringify(Date.now(),null,2);
+    //var shouldBackoff = false;
+    // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
+    // Cloud IoT Core also supports qos=0 for at most once delivery.
+    //console.log('Publishing message:', payload);
+    //client.publish(mqttTopic, payload, { qos: 1 }, function (err) {
+    //  if (!err) {
+    //    shouldBackoff = false;
+    //    backoffTime = 10000;
+//	console.log(err);
+    //  }
+    //});
+  
 });
 
 client.on('close', () => {
   console.log('close');
-  shouldBackoff = true;
+  //shouldBackoff = true;
 });
 
 client.on('error', (err) => {
