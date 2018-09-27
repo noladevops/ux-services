@@ -4,7 +4,7 @@ import './Dashboard.css';
 class Dashboard extends React.Component {
 
   state =  {
-    devices: {}
+    "devices": [{"id":-1,"name":"ghost-device"}]
   }
 
  componentDidMount() {
@@ -22,12 +22,14 @@ class Dashboard extends React.Component {
      if (!response.data) {
        throw Error({"message":"did not find data in response object","data":response});
      }
-      var devices = Array.from(new Map(JSON.parse(response.data)).values());
-      this.setState({devices: devices});
+      var devices = JSON.parse(response.data);
+      console.log(devices);
+      //this.state.devices = devices;
+      this.setState({"devices": devices});
   })
   .catch( (error)=> {
     console.log("Could not load device data" + error.message);
-    this.setState( {devices : {}, error: "Could not communicate with backend" } );
+  //  this.setState( { error: "Could not communicate with backend" } );
   })
 
 
@@ -39,7 +41,7 @@ render() {
   return (
     <div>
       nolab.io device-status
-      
+      <ul className="device-list"> {this.state.devices.map((device) => <li key={device.id}>{device.name} </li>)} </ul>
     </div>
   )
 }
