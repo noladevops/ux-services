@@ -71,7 +71,7 @@ client.on('packetsend', () => {
 // Cloud IoT Core, it must be in the format below.
 
 
-  const payload = `nolab-io/cloud-display-payload-text`;
+
  // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
 // Cloud IoT Core also supports qos=0 for at most once delivery.
  console.log('Publishing message:', payload);
