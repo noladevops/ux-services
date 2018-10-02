@@ -17,9 +17,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": {
-    "/devices/all-devices": {
-      "target": "http://api:3001"
-    }
-  }
+
 }
