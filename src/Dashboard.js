@@ -14,32 +14,29 @@ class Dashboard extends React.Component {
    //this.interval = setInterval( ()=> {mqttConnection.phoneHome()},mqttConnection.deviceArgs.callbackInterval);
 
   fetch('/devices/all-devices')
-  .then( response =>{
-    if (!response.ok) {
-      throw Error( {"message":"Unexpected response from server","data":response} );
-    }
-    return response
-   })
-  .then(
-    res => res.json())
-  .then( (response) => {
-     if (!response.data) {
-       throw Error({"message":"did not find data in response object","data":response});
-     }
-      var devices = JSON.parse(response.data);
+  fetch("/api/foo")
+  .then( response => {
+    if (!response.ok) { throw response }
+    return response.json()  //we only get here if there is no error
+  })
+  .then( json => {
+    this.props.dispatch( (json)=> {
+      var devices = JSON.parse(json);
       console.log(devices);
       //this.state.devices = devices;
       this.setState({"devices": devices});
+    }
+  )
+  .catch( err => {
+    err.text().then( errorMessage => {
+      this.props.dispatch(console.log(errorMessage))
+    })
   })
-  .catch( (error)=> {
-    console.log("Could not load device data:\n " + error.message + "\n" + "Resposne from request:\n" + JSON.stringify(response) );
-  //  this.setState( { error: "Could not communicate with backend" } );
-  })
-
-
-
-
+})
 }
+
+
+
 
 // componentWillUnmount() {
 //   clearInterval(this.interval);
