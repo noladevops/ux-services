@@ -32,7 +32,7 @@ class Dashboard extends React.Component {
       this.setState({"devices": devices});
   })
   .catch( (error)=> {
-    console.log("Could not load device data:\n " + error + "\n" + "Resposne from request:\n" + response );
+    console.log("Could not load device data:\n " + error.message + "\n" + "Resposne from request:\n" + JSON.stringify(response) );
   //  this.setState( { error: "Could not communicate with backend" } );
   })
 
