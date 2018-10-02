@@ -13,25 +13,22 @@ class Dashboard extends React.Component {
    //engage the callback loop
    //this.interval = setInterval( ()=> {mqttConnection.phoneHome()},mqttConnection.deviceArgs.callbackInterval);
 
-  fetch('http://api:3001/devices/all-devices')
+  fetch("devices/all-devices")
   .then( response => {
     if (!response.ok) { throw response }
     return response.json()  //we only get here if there is no error
   })
-  .then( json => {
-    this.props.dispatch( (json)=> {
-      var devices = JSON.parse(json);
+  .then( (json) => {
+      console.log(json);
+      var devices = JSON.parse(json.data);
       console.log(devices);
       //this.state.devices = devices;
       this.setState({"devices": devices});
     }
   )
-  .catch( err => {
-    err.text().then( errorMessage => {
-      this.props.dispatch(console.log(errorMessage))
-    })
+  .catch( (err) => {
+      console.log(err)
   })
-})
 }
 
 
