@@ -1,13 +1,17 @@
 import React from 'react';
 import './Dashboard.css';
 
+
 class Dashboard extends React.Component {
 
   state =  {
     "devices": [{"id":-1,"name":"ghost-device"}]
   }
 
- componentDidMount() {
+  componentDidMount() {
+
+   //engage the callback loop
+   //this.interval = setInterval( ()=> {mqttConnection.phoneHome()},mqttConnection.deviceArgs.callbackInterval);
 
   fetch('/devices/all-devices')
   .then( response =>{
@@ -36,6 +40,10 @@ class Dashboard extends React.Component {
 
 
 }
+
+// componentWillUnmount() {
+//   clearInterval(this.interval);
+// }
 
 render() {
   return (
