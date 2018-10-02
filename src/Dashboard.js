@@ -14,7 +14,6 @@ class Dashboard extends React.Component {
    //this.interval = setInterval( ()=> {mqttConnection.phoneHome()},mqttConnection.deviceArgs.callbackInterval);
 
   fetch('/devices/all-devices')
-  fetch("/api/foo")
   .then( response => {
     if (!response.ok) { throw response }
     return response.json()  //we only get here if there is no error
