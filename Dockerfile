@@ -11,7 +11,8 @@ COPY . /usr/src/app
 RUN npm run build
 
 
-FROM tobi312/rpi-nginx
+#FROM tobi312/rpi-nginx
+FROM nginx:latest
 COPY --from=0 /usr/src/app/build/ /usr/share/nginx/html
 ## Copy the default nginx.conf provided by tiangolo/node-frontend
 COPY --from=0 /usr/src/app/nginx.conf /etc/nginx/sites-enabled/default
