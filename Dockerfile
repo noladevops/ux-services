@@ -17,6 +17,6 @@ COPY --from=0 /usr/src/app/build/ /usr/share/nginx/html
 ## Copy the default nginx.conf provided by tiangolo/node-frontend
 COPY --from=0 /usr/src/app/nginx.conf /etc/nginx/sites-enabled/default
 
-EXPOSE 80 443 3001
+EXPOSE 80 443
 
 CMD ["nginx", "-g", "daemon off;"]
