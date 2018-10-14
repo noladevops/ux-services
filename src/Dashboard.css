@@ -1,5 +1,12 @@
-.device-list {
+.app-container {
+  text-align: center;
+}
+
+.device-grid {
   margin:auto;
   margin-top:10px;
-  width:300px;
+
+}
+.device-container {
+
 }
