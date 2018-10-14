@@ -1,13 +1,14 @@
 import React from 'react';
 import './Dashboard.css';
+import Message from './Message'
 
 
 class Dashboard extends React.Component {
 
-  constructor(props,context) {
-    super(props,context);
-
-  }
+  // constructor(props,context) {
+  //   super(props,context);
+  //
+  // }
 
   componentWillUnmount() {
 
@@ -18,9 +19,30 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    return( <div>
-      {this.props.selectedDevice.deviceName}
-      </div>)
+    return(<div>
+      <div>
+        Device Id: {this.props.selectedDevice._id}
+      </div>
+      <div>
+          Device Name:  {this.props.selectedDevice.deviceName}
+      </div>
+      <div>
+        Device Type: { this.props.selectedDevice.deviceType}
+      </div>
+      <div>
+        Last Seen:
+        <br/> {new Date(this.props.selectedDevice.lastSeen).toTimeString()}
+        <br /> {new Date(this.props.selectedDevice.lastSeen).toDateString()}
+      </div>
+      <fieldset>
+        <legend>Messages</legend>
+        <ul>
+          {this.props.selectedDevice.messages.map( (message)=>{
+            return <li><Message messageData={message} /></li>
+          })}
+        </ul>
+      </fieldset>
+    </div>)
   }
 
 }

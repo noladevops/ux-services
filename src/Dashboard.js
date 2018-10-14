@@ -75,7 +75,7 @@ class Dashboard extends React.Component {
 }
 
 openModal() {
-    console.log("Open Modal")
+  console.log("Open Modal")
    this.setState({modalIsOpen: true});
  }
 
@@ -90,9 +90,18 @@ openModal() {
 
  onRowsSelected = (rowIndex) => {
     console.log("Row Selected" + "\n" + this.rowGetter(rowIndex) );
-    this.setState({selectedDevice: this.rowGetter(rowIndex)});
-    //this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))});
-    this.openModal();
+    // lazy-load a devices messages before setting state
+    fetch("api/devices/telemetry/" + this.rowGetter(rowIndex)._id)
+    .then( (response)=>{
+      return response.json();
+    })
+    .then( (json)=> {
+      this.rowGetter(rowIndex).messages = json.data.messages;
+      this.setState({selectedDevice: this.rowGetter(rowIndex)});
+      //this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))});
+      this.openModal();
+    })
+
   };
 
   onRowsDeselected = (rows) => {
