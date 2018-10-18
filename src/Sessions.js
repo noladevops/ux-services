@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
-import Device from './Device'
+import Session from './Session'
 import Modal from 'react-modal'
-import './Dashboard.css';
+import './Sessions.css';
 
 const customStyles = {
   content : {
@@ -11,61 +11,49 @@ const customStyles = {
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
+    transform             : 'translate(-50%, -50%)',
+    maxWidth             : '500px',
+    maxHeight            : '500px'
   }
 };
 
-class Dashboard extends React.Component {
-
-
-
+class Sessions extends React.Component {
 
   constructor(props,context) {
     super(props,context);
     this.state = {
      modalIsOpen: false
-     ,devices: [{"id":-1,"name":"ghost-device"}]
-     ,selectedDevice: {}
+     ,sessions: [{"id":-1,"pastRequests":[],"authProvider":"a ghost", "created": new Date().toString(), "lastSeen": new Date().toString()}]
+     ,selectedSession: {}
    };
 
    this.openModal = this.openModal.bind(this);
    this.afterOpenModal = this.afterOpenModal.bind(this);
    this.closeModal = this.closeModal.bind(this);
-    this._columns = [
-      { key: 'deviceName', name: 'Device'}
+   this.columns = [
+      { key: 'sid', name: 'Session ID'}
+      ,{key: 'created', name: 'Created'}
       ,{key: 'lastSeen', name: 'Last Seen'}
+      ,{key: 'authProvider', name: "Auth Provider"}
     ]
   }
 
-
-
-
-
-
   rowGetter = (i) => {
-    return this.state.devices[i];
+    return this.state.sessions[i];
   };
 
   componentDidMount() {
-    this.columns = [{key: 'deviceName', name: 'Device'},{key: 'lastSeen', name: 'Last Seen'}];
-
-   //engage the callback loop
-   //this.interval = setInterval( ()=> {mqttConnection.phoneHome()},mqttConnection.deviceArgs.callbackInterval);
-
-  fetch("api/devices/")
+   fetch("api/activity/sessions")
   .then( response => {
-    if (!response.ok) { throw response }
+    if (!response.ok) { throw new Error(response) }
     return response.json()  //we only get here if there is no error
   })
   .then( (json) => {
-      let devices = json.data.map( (device) => {
-        device.key = device._id;
-        return device;
+      let sessions = json.data.map( (session) => {
+        session.key = session._id;
+        return session;
       } );
-      //var devices = JSON.parse(json.data);
-      //console.log(devices);
-      //this.state.devices = devices;
-      this.setState({"devices": devices});
+      this.setState({"sessions": sessions});
     }
   )
 
@@ -91,14 +79,13 @@ openModal() {
  onRowsSelected = (rowIndex) => {
     console.log("Row Selected" + "\n" + this.rowGetter(rowIndex) );
     // lazy-load a devices messages before setting state
-    fetch("api/devices/telemetry/" + this.rowGetter(rowIndex)._id)
+    fetch("api/activity/sessions/" + this.rowGetter(rowIndex)._id)
     .then( (response)=>{
       return response.json();
     })
     .then( (json)=> {
       this.rowGetter(rowIndex).messages = json.data.messages;
-      this.setState({selectedDevice: this.rowGetter(rowIndex)});
-      //this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))});
+      this.setState({selectedSession: this.rowGetter(rowIndex)});
       this.openModal();
     })
 
@@ -117,13 +104,14 @@ openModal() {
 
 render() {
   return (
-    <div className="app-container" >
-      nolab.io device-status
-      <div className="device-container">
+    <div className="operations-container" >
+      Sessions <br />
+      Count: {this.state.sessions.length}
+      <div className="session-container">
           <ReactDataGrid
-            columns={this._columns}
+            columns={this.columns}
             rowGetter={this.rowGetter}
-            rowsCount={this.state.devices.length}
+            rowsCount={this.state.sessions.length}
             minHeight={500}
             enableRowSelect="single"
             onRowClick={this.onRowsSelected}
@@ -141,8 +129,8 @@ render() {
          onRequestClose={this.closeModal}
          style={customStyles}
          ariaHideApp={false}
-         contentLabel="Device Details">
-           <Device  selectedDevice={this.state.selectedDevice} />
+         contentLabel="Session Details">
+           <Session  selectedSession={this.state.selectedSession} />
         </Modal>
       </div>
     </div>
@@ -152,4 +140,4 @@ render() {
 
 }
 
-export default Dashboard;
+export default Sessions;

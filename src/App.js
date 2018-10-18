@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.css';
-import Dashboard from './Dashboard';
-import Operations from './Operations';
+import Devices from './Devices';
+import Sessions from './Sessions';
 import Users from './Users';
+import Login from './Login';
 import { Container, Row, Col } from 'reactstrap';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,13 +11,14 @@ const App = () => {
   return (
     <div className="App">
     nolab.io iot Dashboard
+      <Login />
       <Container>
         <Row>
           <Col xs="5">
-             <Operations />
+             <Sessions />
           </Col>
           <Col xs="3">
-          <Dashboard />
+          <Devices />
           </Col>
           <Col xs="3">
             <Users />

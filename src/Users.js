@@ -105,7 +105,8 @@ openModal() {
 render() {
   return (
     <div className="operations-container" >
-      Users
+      Users <br />
+      Count: {this.state.users.length}
       <div className="user-container">
           <ReactDataGrid
             columns={this.columns}

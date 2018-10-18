@@ -1,5 +1,5 @@
 import React from 'react';
-import './Dashboard.css';
+import './Device.css';
 import Message from './Message'
 
 
