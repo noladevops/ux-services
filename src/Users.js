@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
-import Session from './Session'
+import User from './User'
 import Modal from 'react-modal'
-import './Operations.css';
+import './Users.css';
 
 const customStyles = {
   content : {
@@ -17,43 +17,43 @@ const customStyles = {
   }
 };
 
-class Operations extends React.Component {
+class Users extends React.Component {
 
   constructor(props,context) {
     super(props,context);
     this.state = {
      modalIsOpen: false
-     ,sessions: [{"id":-1,"pastRequests":[],"authProvider":"a ghost", "created": new Date().toString(), "lastSeen": new Date().toString()}]
-     ,selectedSession: {}
+     ,users: [{"id":-1,"username":"a user","name":"a ghost", "created": new Date().toString(), "lastSeen": new Date().toString()}]
+     ,selectedUser: {}
    };
 
    this.openModal = this.openModal.bind(this);
    this.afterOpenModal = this.afterOpenModal.bind(this);
    this.closeModal = this.closeModal.bind(this);
    this.columns = [
-      { key: 'sid', name: 'Session ID'}
-      ,{key: 'created', name: 'Created'}
+      { key: 'username', name: 'User'}
+      ,{key: 'name', name: 'Name'}
+      ,{key: 'created', name: "Created"}
       ,{key: 'lastSeen', name: 'Last Seen'}
-      ,{key: 'authProvider', name: "Auth Provider"}
     ]
   }
 
   rowGetter = (i) => {
-    return this.state.sessions[i];
+    return this.state.users[i];
   };
 
   componentDidMount() {
-   fetch("api/activity/sessions")
+   fetch("api/users")
   .then( response => {
     if (!response.ok) { throw new Error(response) }
     return response.json()  //we only get here if there is no error
   })
   .then( (json) => {
-      let sessions = json.data.map( (session) => {
-        session.key = session._id;
-        return session;
+      let users = json.data.map( (user) => {
+        user.key = user._id;
+        return user;
       } );
-      this.setState({"sessions": sessions});
+      this.setState({"users": users});
     }
   )
 
@@ -79,13 +79,13 @@ openModal() {
  onRowsSelected = (rowIndex) => {
     console.log("Row Selected" + "\n" + this.rowGetter(rowIndex) );
     // lazy-load a devices messages before setting state
-    fetch("api/activity/sessions/" + this.rowGetter(rowIndex)._id)
+    fetch("api/users/" + this.rowGetter(rowIndex)._id)
     .then( (response)=>{
       return response.json();
     })
     .then( (json)=> {
       this.rowGetter(rowIndex).messages = json.data.messages;
-      this.setState({selectedSession: this.rowGetter(rowIndex)});
+      this.setState({selectedUser: this.rowGetter(rowIndex)});
       this.openModal();
     })
 
@@ -105,12 +105,12 @@ openModal() {
 render() {
   return (
     <div className="operations-container" >
-      Sessions
-      <div className="session-container">
+      Users
+      <div className="user-container">
           <ReactDataGrid
             columns={this.columns}
             rowGetter={this.rowGetter}
-            rowsCount={this.state.sessions.length}
+            rowsCount={this.state.users.length}
             minHeight={500}
             enableRowSelect="single"
             onRowClick={this.onRowsSelected}
@@ -128,8 +128,8 @@ render() {
          onRequestClose={this.closeModal}
          style={customStyles}
          ariaHideApp={false}
-         contentLabel="Session Details">
-           <Session  selectedSession={this.state.selectedSession} />
+         contentLabel="User Details">
+           <User  selectedUser={this.state.selectedUser} />
         </Modal>
       </div>
     </div>
@@ -139,4 +139,4 @@ render() {
 
 }
 
-export default Operations;
+export default Users;

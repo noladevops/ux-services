@@ -1,6 +1,6 @@
 import React from 'react';
 import './Dashboard.css';
-import Message from './Message'
+
 
 
 class Session extends React.Component {
@@ -19,20 +19,20 @@ class Session extends React.Component {
   }
 
   render() {
-    return(<div>
+    return(<div >
       <div>
         Device Id: {this.props.selectedSession._id}
       </div>
       <div>
-          User:  {this.props.selectedSession.user.username}
+          User:  {this.props.selectedSession.user._id}
       </div>
       <div>
         Last Request: { this.props.selectedSession.lastRequest }
       </div>
       <div>
-        Last Seen:
-        <br/> {new Date(this.props.selectedSession.created).toTimeString()}
-        <br /> {new Date(this.props.selectedDevice.lastSeen).toDateString()}
+        Session Object:
+
+        {this.props.selectedSession.sessionObject}
       </div>
       <fieldset>
         <legend>Requests</legend>
