@@ -3,7 +3,16 @@
   background: #f5f5f5;
   color: #333;
   padding: 20px;
-  width: 400px;
+  min-width: 400px;
+  max-width: 1000px;
   height:600px;
   margin:auto;
+}
+
+.dashboard {
+  width:400px;
+}
+
+.operations {
+  width: 400px;
 }
