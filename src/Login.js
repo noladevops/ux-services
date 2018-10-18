@@ -58,8 +58,8 @@ openModal() {
        'Content-Type': 'application/json',
      },
      body: JSON.stringify({
-       firstParam: 'yourValue',
-       secondParam: 'yourOtherValue',
+       username: 'hardcoded_harry',
+       password: '12345',
      })
    })
    .then( ()=> {
