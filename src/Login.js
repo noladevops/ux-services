@@ -35,8 +35,7 @@ class Login extends React.Component {
   }
 
 openModal() {
-  console.log("Open Modal")
-   this.setState({modalIsOpen: true});
+  this.setState({modalIsOpen: true});
  }
 
  afterOpenModal() {
@@ -49,7 +48,7 @@ openModal() {
 
  }
 
- sendLogin() {
+ sendLogin(event) {
    console.log("Sending U/P to log-in");
    fetch('/api/auth', {
      method: 'POST',
@@ -62,8 +61,8 @@ openModal() {
        password: '12345',
      })
    })
-   .then( ()=> {
-     console.log("Logged In");
+   .then( (err,res)=> {
+     console.log(err);
    } )
  }
 
@@ -81,14 +80,14 @@ render() {
          <Form>
            <FormGroup>
              <Label for="exampleEmail">Email</Label>
-             <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" />
+             <Input type="email" name="email" id="usernameInput" placeholder="username" />
            </FormGroup>
            <FormGroup>
              <Label for="examplePassword">Password</Label>
-             <Input type="password" name="password" id="examplePassword" placeholder="password placeholder" />
+             <Input type="password" name="password" id="passwordInput" placeholder="password" />
            </FormGroup>
            <FormGroup>
-              <Button onClick={this.sendLogin()}>Submit</Button>{' '}
+              <Button onClick={this.sendLogin.bind(this)}>Submit</Button>{' '}
            </FormGroup>
         </Form>
         </Modal>
