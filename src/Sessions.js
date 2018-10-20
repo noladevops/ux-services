@@ -43,7 +43,9 @@ class Sessions extends React.Component {
   };
 
   componentDidMount() {
-   fetch("api/activity/sessions")
+   fetch("api/activity/sessions",{
+  credentials: "include"
+})
   .then( response => {
     if (!response.ok) { throw new Error(response) }
     return response.json()  //we only get here if there is no error
