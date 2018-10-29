@@ -1,31 +1,20 @@
 import React from 'react';
 import './App.css';
-import Devices from './Devices';
-import Sessions from './Sessions';
-import Users from './Users';
+import ContentEngine from './ContentEngine'
 import Login from './Login';
-import { Container, Row, Col } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink,  Container, Row, Col, Jumbotron } from 'reactstrap';
+import classnames from 'classnames';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
   return (
     <div className="App">
-    nolab.io iot Dashboard
       <Login />
-      <Container>
-        <Row>
-          <Col xs="5">
-             <Sessions />
-          </Col>
-          <Col xs="3">
-          <Devices />
-          </Col>
-          <Col xs="3">
-            <Users />
-          </Col>
-        </Row>
-      </Container>
-    </div>
+      <Jumbotron className="jumboheader">
+        <h4>  nolab.io iot Dashboard </h4>
+        <ContentEngine />
+      </Jumbotron>
+  </div>
   );
 };
 
