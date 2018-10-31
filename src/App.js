@@ -11,7 +11,7 @@ const App = () => {
     <div className="App">
       <Login />
       <Jumbotron className="jumboheader">
-        <h4>  nolab.io iot Dashboard </h4>
+        <h4>  lawns.io </h4>
         <ContentEngine />
       </Jumbotron>
   </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import Dashboard from './Dashboard';
+import Addresses from './lawns/Addresses';
+import Customers from './lawns/Customers';
 import Scoreboard from './Scoreboard';
 
 import { TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap'
@@ -32,7 +33,15 @@ class ContentEngine extends React.Component {
                   className={classnames({ active: this.state.activeTab === '1' })}
                   onClick={() => { this.toggle('1'); }}
                 >
-                  Dashboard
+                  Addresses
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '3' })}
+                  onClick={() => { this.toggle('3'); }}
+                  >
+                  Customers
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -45,12 +54,19 @@ class ContentEngine extends React.Component {
               </NavItem>
             </Nav>
             <TabContent activeTab={this.state.activeTab} >
+
               <TabPane tabId="1">
-                <Dashboard />
+                <Addresses />
               </TabPane>
+
+              <TabPane tabId="3">
+                <Customers />
+              </TabPane>
+
               <TabPane tabId="2">
                   <Scoreboard />
               </TabPane>
+
             </TabContent>
           </div>
           )

@@ -12,8 +12,8 @@ const customStyles = {
     bottom                : 'auto',
     marginRight           : '-50%',
     transform             : 'translate(-50%, -50%)',
-    maxWidth             : '500px',
-    maxHeight            : '500px'
+    maxWidth             : '800px',
+    maxHeight            : '700px'
   }
 };
 
@@ -65,7 +65,6 @@ class Addresses extends React.Component {
 }
 
 openModal() {
-  console.log("Open Modal")
    this.setState({modalIsOpen: true});
  }
 
@@ -88,6 +87,7 @@ openModal() {
     .then( (json)=> {
       //this.rowGetter(rowIndex).messages = json.data.messages;
       this.setState({selectedAddress: this.rowGetter(rowIndex)});
+      console.log(this.state.selectedAddress)
       this.openModal();
     })
 
