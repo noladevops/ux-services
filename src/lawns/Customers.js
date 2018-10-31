@@ -50,11 +50,11 @@ class Customers extends React.Component {
     return response.json()  //we only get here if there is no error
   })
   .then( (json) => {
-      let customers = json.data.map( (address) => {
-        address.key = address._id;
-        return address;
-      } );
-      this.setState({"customers": customers});
+      // let customers = json.data.map( (customer) => {
+      //   console.log(customer);
+      //   return customer;
+      // } );
+      this.setState({"customers": json.data});
     }
   )
 
@@ -77,17 +77,25 @@ openModal() {
  }
 
  onRowsSelected = (rowIndex) => {
-    console.log("Row Selected" + "\n" + this.rowGetter(rowIndex) );
     // lazy-load a devices messages before setting state
     fetch("api/customers/" + this.rowGetter(rowIndex)._id)
     .then( (response)=>{
+      console.log(response);
       return response.json();
     })
     .then( (json)=> {
       //this.rowGetter(rowIndex).messages = json.data.messages;
-      this.setState({selectedCustomer: this.rowGetter(rowIndex)});
-      console.log(this.state.selectedCustomer)
+      console.log(json);
+      this.setState({selectedCustomer: json.customer});
+      // console.log(this.state.selectedCustomer)
       this.openModal();
+      // this.state.selectedCustomer.addressObjects = [];
+      // this.state.selectedCustomer.addresses.map( (address)=>{
+      //   .fetch("api/addresses" + address)
+      //   .then( (response)=> {
+      //      this.state.selectedCustomer.addressObjects.push(response.json());
+      //   })
+      // })
     })
 
   };

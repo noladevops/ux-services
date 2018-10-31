@@ -47,7 +47,7 @@ class Customer extends React.Component {
       <div style={{width:"500px", border: "solid 1px black"}}>
       <ul>
         {this.props.selectedCustomer.addresses.map( (address)=>{
-          return <li> {address} </li>
+          return <li> {address.formattedAddress} </li>
         })}
       </ul>
       </div>
