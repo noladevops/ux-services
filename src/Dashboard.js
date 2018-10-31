@@ -1,4 +1,5 @@
 import React from 'react';
+import Addresses from './lawns/Addresses'
 import {Button, Card, CardText, CardBody,
   CardTitle, CardSubtitle} from 'reactstrap'
 
@@ -9,10 +10,8 @@ class Dashboard extends React.Component {
       return (
         <Card>
           <CardBody>
-            <CardTitle>Card title</CardTitle>
-            <CardSubtitle>Card subtitle</CardSubtitle>
-            <CardText>Some quick example text to build on the card title and make up the bulk of the card content.</CardText>
-              <Button>Button</Button>
+          <CardTitle>Customer Address Index</CardTitle>
+            <Addresses />
           </CardBody>
         </Card>
       )

@@ -42,4 +42,4 @@ class Address extends React.Component {
 
 }
 
-export default Session;
+export default Address;

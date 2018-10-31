@@ -131,10 +131,11 @@ render() {
          style={customStyles}
          ariaHideApp={false}
          contentLabel="Address Details">
-           <Session  selectedAddress={this.state.selectedAddress} />
+           <Address  selectedAddress={this.state.selectedAddress} />
         </Modal>
       </div>
     </div>
+
 
   )
 }
