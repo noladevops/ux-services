@@ -15,6 +15,8 @@ class CutManifest extends React.Component {
       super(props,context);
       this.toggle = this.toggle.bind(this);
       this.selectCrewLead = this.selectCrewLead.bind(this);
+      this.addressFilterChange = this.addressFilterChange.bind(this);
+      this.customerFilterChange = this.customerFilterChange.bind(this);
     }
 
   state = {
@@ -52,7 +54,21 @@ class CutManifest extends React.Component {
       })
       .then( (json) => {
         console.log(json.data);
-          this.setState({addresses: json.data});
+        var timedAddresses = json.data.map( (address)=> {
+          address.start = new Date(moment().day(address.day));
+          address.end = new Date(moment().day(address.day));
+          return address;
+        })
+          this.setState({addresses: timedAddresses});
+      });
+      fetch("/api/customers", {credentials: "include" })
+      .then( response => {
+        if (!response.ok) { throw new Error(response) }
+        return response.json()  //we only get here if there is no error
+      })
+      .then( (json) => {
+        console.log(json.data);
+          this.setState({customers: json.data});
       });
       fetch("/api/days", {credentials: "include" })
       .then( response => {
@@ -88,16 +104,23 @@ class CutManifest extends React.Component {
     var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
     console.log(crewLead);
     this.setState( {selectedCrewLead:  crewLead });
+    var crewAddresses = lodash.filter(this.state.addresses, x => x.lead === crewLead._id);
+    console.log(crewAddresses);
+    this.setState( {activeAddresses: crewAddresses});
   }
 
   addressFilterChange(event) {
-    var activeAddresses = lodash.filter(this.state.addresses,{'formattedAddress': event.target.innerText});
+
+    console.log(event.target.value);
+    // console.log(this.state.addresses);
+    var activeAddresses = lodash.filter(this.state.addresses, x => x.originalText.toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0 );
     console.log(activeAddresses);
-    this.setState({ activeAddresses: activeAddresses});
+    this.setState({activeAddresses: activeAddresses});
   }
 
   customerFilterChange(event){
-    var activeCustomers = lodash.filter(this.state.customers,{'name': event.target.innerText});
+    console.log(event.target.value);
+    var activeCustomers = lodash.filter(this.state.customers, x => x.name.toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0 );
     console.log(activeCustomers);
     this.setState({activeCustomers: activeCustomers});
 
@@ -132,13 +155,13 @@ class CutManifest extends React.Component {
                 <Col>
                   <InputGroup>
                     <InputGroupAddon addonType="prepend">Address:</InputGroupAddon>
-                      <Input  />
+                      <Input  onChange={this.addressFilterChange} />
                   </InputGroup>
                 </Col>
                 <Col>
                   <InputGroup>
                     <InputGroupAddon addonType="prepend">Customer:</InputGroupAddon>
-                      <Input  />
+                      <Input onChange={this.customerFilterChange}  />
                     </InputGroup>
                 </Col>
 
@@ -156,7 +179,7 @@ class CutManifest extends React.Component {
                 localizer={localizer}
                 defaultDate={new Date()}
                 defaultView="week"
-                events={this.state.events}
+                events={this.state.activeAddresses}
                 style={{ height: "100vh" }}
               />
             </Col>
