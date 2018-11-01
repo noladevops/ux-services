@@ -2,9 +2,9 @@ import React from 'react';
 import './CutManifest.css';
 import Calendar from 'react-big-calendar';
 import {Row,Col, InputGroup,Input,InputGroupAddon} from 'reactstrap';
-import {Dropdown,DropdownMenu,DropdownItem,DropdownToggle, Card, CardBody, Button} from 'reactstrap'
+import {Alert,Dropdown,DropdownMenu,DropdownItem,DropdownToggle, Card, CardBody, Button} from 'reactstrap'
 import moment from 'moment';
-
+import lodash from 'lodash'
 
 const localizer =  Calendar.momentLocalizer(moment);
 
@@ -14,11 +14,17 @@ class CutManifest extends React.Component {
   constructor(props,context) {
       super(props,context);
       this.toggle = this.toggle.bind(this);
-
+      this.selectCrewLead = this.selectCrewLead.bind(this);
     }
 
   state = {
       dropdownOpen: false,
+      crewLeads: [],
+      addresses: [],
+      days: [],
+      selectedCrewLead: {
+        name: "(select a crew lead)"
+      },
       events: [
         {
           start: new Date(),
@@ -72,24 +78,37 @@ class CutManifest extends React.Component {
     }));
   }
 
+  selectCrewLead(event) {
+    var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
+    console.log(crewLead);
+    this.setState( {selectedCrewLead:  crewLead });
+  }
+
   render() {
+    let dropdownItems = this.state.crewLeads.map( (crewLead)=>{
+      if (crewLead.name !== 'crew'){
+        return <DropdownItem onClick={this.selectCrewLead} key={crewLead._id}>{crewLead.name}</DropdownItem>
+      } else { return}
+    })
     return(
       <div>
       <Card>
           <CardBody>
             <Row>
                 <Col>
-                    <Dropdown  isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+                    <Dropdown size="sm"  isOpen={this.state.dropdownOpen} toggle={this.toggle} >
                     <DropdownToggle caret>
                       Crew Lead
                     </DropdownToggle>
-                    <DropdownMenu>
-                      <DropdownItem>Header</DropdownItem>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another Action</DropdownItem>
-                      <DropdownItem>Another Action</DropdownItem>
+                    <DropdownMenu left>
+                      {dropdownItems}
                     </DropdownMenu>
                   </Dropdown>
+                </Col>
+                <Col>
+                  <Alert color="primary">
+                      {this.state.selectedCrewLead.name}
+                  </Alert>
                 </Col>
                 <Col>
                   <InputGroup>
