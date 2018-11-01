@@ -21,6 +21,12 @@ class CutManifest extends React.Component {
       dropdownOpen: false,
       crewLeads: [],
       addresses: [],
+      activeAddresses: [],
+      selectedAddress: [],
+      activeCustomers: [],
+      selectedCustomer: [],
+      customerSearchText: [],
+      addressSearchText: [],
       days: [],
       selectedCrewLead: {
         name: "(select a crew lead)"
@@ -82,6 +88,19 @@ class CutManifest extends React.Component {
     var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
     console.log(crewLead);
     this.setState( {selectedCrewLead:  crewLead });
+  }
+
+  addressFilterChange(event) {
+    var activeAddresses = lodash.filter(this.state.addresses,{'formattedAddress': event.target.innerText});
+    console.log(activeAddresses);
+    this.setState({ activeAddresses: activeAddresses});
+  }
+
+  customerFilterChange(event){
+    var activeCustomers = lodash.filter(this.state.customers,{'name': event.target.innerText});
+    console.log(activeCustomers);
+    this.setState({activeCustomers: activeCustomers});
+
   }
 
   render() {
