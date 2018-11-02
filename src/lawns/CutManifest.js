@@ -100,10 +100,11 @@ class CutManifest extends React.Component {
   }
 
   selectCrewLead(event) {
+
     var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
     this.setState( {selectedCrewLead:  crewLead });
     var crewAddresses = lodash.filter(this.state.addresses, x => x.lead === crewLead._id);
-    this.setState( {activeAddresses: crewAddresses,filterEchoText: event.target.innerText + " - " + crewAddresses.length + " addresses"});
+    this.setState( {customerFilter: "", addressFilter:"",activeAddresses: crewAddresses,filterEchoText: event.target.innerText + " - " + crewAddresses.length + " addresses"});
   }
 
   addressFilterChange(event) {
