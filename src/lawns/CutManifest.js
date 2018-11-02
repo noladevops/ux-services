@@ -27,7 +27,7 @@ class CutManifest extends React.Component {
       dayDropdownOpen: false,
       crewLeads: [],
       addresses: [],
-      selectedDay:"",
+      selectedDay: {name: "all days"},
       addressFilter: "",
       customerFilter: "",
       filterEchoText: "",
@@ -191,7 +191,7 @@ class CutManifest extends React.Component {
                 </Col>
                 <Col>
                   <Alert color="primary">
-                      {this.state.selectedCrewLead.name + " " + this.state.selectedDay.name}
+                      {this.state.selectedCrewLead.name + " - " + this.state.selectedDay.name}
                   </Alert>
                 </Col>
                 <Col>
