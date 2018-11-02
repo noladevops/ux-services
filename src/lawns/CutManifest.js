@@ -115,14 +115,15 @@ class CutManifest extends React.Component {
     var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
     this.setState( {selectedCrewLead:  crewLead });
     var crewAddresses = lodash.filter(this.state.activeAddresses, x => x.lead === crewLead._id);
-    this.setState( {customerFilter: "", addressFilter:"",activeAddresses: crewAddresses,filterEchoText: event.target.innerText + " - " + crewAddresses.length + " addresses"});
+    this.setState( {customerFilter: "", addressFilter:"",filteredAddresses: crewAddresses,filterEchoText: event.target.innerText + " - " + crewAddresses.length + " addresses",selectedDay: {name: "all days"}});
+
   }
 
   selectDay(event){
     var day = lodash.filter(this.state.days, x => x.name === event.target.innerText)[0];
     this.setState( {selectedDay:  day });
-    var dayAddresses = lodash.filter(this.state.activeAddresses, x => x.cutDay === day._id);
-    this.setState( {customerFilter: "", addressFilter:"",activeAddresses: dayAddresses,filteredAddresses: dayAddresses,filterEchoText: event.target.innerText + " - " + dayAddresses.length + " addresses"});
+    var dayAddresses = lodash.filter(this.state.filteredAddresses, x => x.cutDay === day._id);
+    this.setState( {customerFilter: "", addressFilter:"",filteredAddresses: dayAddresses,filterEchoText: event.target.innerText + " - " + dayAddresses.length + " addresses"});
   }
 
   addressFilterChange(event) {
