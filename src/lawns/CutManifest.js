@@ -23,6 +23,8 @@ class CutManifest extends React.Component {
       dropdownOpen: false,
       crewLeads: [],
       addresses: [],
+      addressFilter: "",
+      customerFilter: "",
       filterEchoText: "",
       filteredAddresses:[],
       activeAddresses: [],
@@ -105,15 +107,29 @@ class CutManifest extends React.Component {
   }
 
   addressFilterChange(event) {
+
     var activeAddresses = lodash.filter(this.state.activeAddresses, x => x.originalText.toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0 );
-    this.setState({filteredAddresses: activeAddresses, filterEchoText: this.state.selectedCrewLead.name + " - " + event.target.value + " " + activeAddresses.length  });
+    this.setState({addressFilter: event.target.value,customerFilter:"",filteredAddresses: activeAddresses, filterEchoText: this.state.selectedCrewLead.name + " - " + event.target.value + " " + activeAddresses.length  });
   }
 
   customerFilterChange(event){
     var activeCustomers = lodash.filter(this.state.customers, x => x.name.toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0 );
     //todo: shove customer's addresses into state here as filteredAddresses,
+    var addressIdArrays = activeCustomers.map( (customer)=> {
+      return customer.addresses;
+    });
+    var mergedIds = [].concat.apply([], addressIdArrays);
+    this.setState({})
+    this.setState({customerFilter: event.target.value,addressFilter:"",filteredAddresses: this.getAddresses(mergedIds),filteredCustomers: activeCustomers, filterEchoText: event.target.value + " - " + activeCustomers.length + " customers" });
+  }
 
-    this.setState({filteredCustomers: activeCustomers, filterEchoText: event.target.value + " - " + activeCustomers.length + " customers" });
+  getAddresses(idArray){
+    // console.log(this.state.activeAddresses);
+    var addressArrays = idArray.map( id=>{
+      return lodash.filter(this.state.activeAddresses, x => x._id === id)
+    });
+    var addressArray = [].concat.apply([], addressArrays);
+    return addressArray;
   }
 
   render() {
@@ -145,13 +161,13 @@ class CutManifest extends React.Component {
                 <Col>
                   <InputGroup>
                     <InputGroupAddon addonType="prepend">Address:</InputGroupAddon>
-                      <Input  onChange={this.addressFilterChange} />
+                      <Input  value={this.state.addressFilter} onChange={this.addressFilterChange} />
                   </InputGroup>
                 </Col>
                 <Col>
                   <InputGroup>
                     <InputGroupAddon addonType="prepend">Customer:</InputGroupAddon>
-                      <Input onChange={this.customerFilterChange}  />
+                      <Input value={this.state.customerFilter} onChange={this.customerFilterChange}  />
                     </InputGroup>
                 </Col>
 
@@ -165,7 +181,9 @@ class CutManifest extends React.Component {
             <Row>
             <Col>
                 <ul>
-                  <li> An address </li>
+                  {this.state.filteredAddresses.map((address)=>{
+                    return <li> {address.formattedAddress} - {address.customer} - {address.day}</li>
+                  })}
                 </ul>
             </Col>
             </Row>
