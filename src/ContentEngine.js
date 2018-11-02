@@ -29,7 +29,7 @@ class ContentEngine extends React.Component {
 
   render() {
     return(
-      <div>
+      <div >
           <Nav tabs>
           <NavItem>
             <NavLink

@@ -1,19 +1,19 @@
 import React from 'react';
 import './CutManifest.css';
-import Calendar from 'react-big-calendar';
 import {Row,Col, InputGroup,Input,InputGroupAddon} from 'reactstrap';
 import {Alert,Dropdown,DropdownMenu,DropdownItem,DropdownToggle, Card, CardBody, Button} from 'reactstrap'
 import moment from 'moment';
 import lodash from 'lodash'
 
-const localizer =  Calendar.momentLocalizer(moment);
 
-import "react-big-calendar/lib/css/react-big-calendar.css";
+
+
+
 
 class CutManifest extends React.Component {
   constructor(props,context) {
       super(props,context);
-      this.toggle = this.toggle.bind(this);
+      this.toggleDropdown = this.toggleDropdown.bind(this);
       this.selectCrewLead = this.selectCrewLead.bind(this);
       this.addressFilterChange = this.addressFilterChange.bind(this);
       this.customerFilterChange = this.customerFilterChange.bind(this);
@@ -23,15 +23,18 @@ class CutManifest extends React.Component {
       dropdownOpen: false,
       crewLeads: [],
       addresses: [],
+      filterEchoText: "",
+      filteredAddresses:[],
       activeAddresses: [],
       selectedAddress: [],
+      filteredCustomers:[],
       activeCustomers: [],
       selectedCustomer: [],
       customerSearchText: [],
       addressSearchText: [],
       days: [],
       selectedCrewLead: {
-        name: "(select a crew lead)"
+        name: "all leads"
       },
       events: [
         {
@@ -53,13 +56,12 @@ class CutManifest extends React.Component {
         return response.json()  //we only get here if there is no error
       })
       .then( (json) => {
-        console.log(json.data);
         var timedAddresses = json.data.map( (address)=> {
           address.start = new Date(moment().day(address.day));
           address.end = new Date(moment().day(address.day));
           return address;
         })
-          this.setState({addresses: timedAddresses});
+          this.setState({addresses: timedAddresses,activeAddresses: timedAddresses, filterEchoText: "loaded " + timedAddresses.length + " addresses"});
       });
       fetch("/api/customers", {credentials: "include" })
       .then( response => {
@@ -67,7 +69,6 @@ class CutManifest extends React.Component {
         return response.json()  //we only get here if there is no error
       })
       .then( (json) => {
-        console.log(json.data);
           this.setState({customers: json.data});
       });
       fetch("/api/days", {credentials: "include" })
@@ -76,7 +77,6 @@ class CutManifest extends React.Component {
         return response.json()  //we only get here if there is no error
       })
       .then( (json) => {
-        console.log(json.data);
           this.setState({days: json.data});
       });
       fetch("/api/crew/leads", {credentials: "include" })
@@ -85,16 +85,13 @@ class CutManifest extends React.Component {
         return response.json()  //we only get here if there is no error
       })
       .then( (json) => {
-        console.log(json.data);
           this.setState({crewLeads: json.data});
       });
-
-
 
   }
 
   //dropdown methods
-  toggle() {
+  toggleDropdown() {
     this.setState(prevState => ({
       dropdownOpen: !prevState.dropdownOpen
     }));
@@ -102,28 +99,21 @@ class CutManifest extends React.Component {
 
   selectCrewLead(event) {
     var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
-    console.log(crewLead);
     this.setState( {selectedCrewLead:  crewLead });
     var crewAddresses = lodash.filter(this.state.addresses, x => x.lead === crewLead._id);
-    console.log(crewAddresses);
-    this.setState( {activeAddresses: crewAddresses});
+    this.setState( {activeAddresses: crewAddresses,filterEchoText: event.target.innerText + " - " + crewAddresses.length + " addresses"});
   }
 
   addressFilterChange(event) {
-
-    console.log(event.target.value);
-    // console.log(this.state.addresses);
-    var activeAddresses = lodash.filter(this.state.addresses, x => x.originalText.toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0 );
-    console.log(activeAddresses);
-    this.setState({activeAddresses: activeAddresses});
+    var activeAddresses = lodash.filter(this.state.activeAddresses, x => x.originalText.toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0 );
+    this.setState({filteredAddresses: activeAddresses, filterEchoText: this.state.selectedCrewLead.name + " - " + event.target.value + " " + activeAddresses.length  });
   }
 
   customerFilterChange(event){
-    console.log(event.target.value);
     var activeCustomers = lodash.filter(this.state.customers, x => x.name.toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0 );
-    console.log(activeCustomers);
-    this.setState({activeCustomers: activeCustomers});
+    //todo: shove customer's addresses into state here as filteredAddresses,
 
+    this.setState({filteredCustomers: activeCustomers, filterEchoText: event.target.value + " - " + activeCustomers.length + " customers" });
   }
 
   render() {
@@ -138,7 +128,7 @@ class CutManifest extends React.Component {
           <CardBody>
             <Row>
                 <Col>
-                    <Dropdown size="sm"  isOpen={this.state.dropdownOpen} toggle={this.toggle} >
+                    <Dropdown size="sm"  isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown} >
                     <DropdownToggle caret>
                       Crew Lead
                     </DropdownToggle>
@@ -168,20 +158,15 @@ class CutManifest extends React.Component {
               </Row>
                 <Card>
                   <CardBody>
-
-                    Echo Selection
+                      {this.state.filterEchoText}
                     <Button> Create </Button>
                   </CardBody>
               </Card>
             <Row>
             <Col>
-              <Calendar
-                localizer={localizer}
-                defaultDate={new Date()}
-                defaultView="week"
-                events={this.state.activeAddresses}
-                style={{ height: "100vh" }}
-              />
+                <ul>
+                  <li> An address </li>
+                </ul>
             </Col>
             </Row>
           </CardBody>

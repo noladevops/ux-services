@@ -9,11 +9,14 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 const App = () => {
   return (
     <div className="App">
+
       <Login />
       <Jumbotron className="jumboheader">
         <h4>  lawns.io </h4>
-        <ContentEngine />
       </Jumbotron>
+
+      <ContentEngine />
+    
   </div>
   );
 };
