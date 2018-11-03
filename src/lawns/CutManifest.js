@@ -1,7 +1,7 @@
 import React from 'react';
 import './CutManifest.css';
 import {Row,Col, InputGroup,Input,InputGroupAddon} from 'reactstrap';
-import {Alert,Dropdown,DropdownMenu,DropdownItem,DropdownToggle, Card, CardBody, Button} from 'reactstrap'
+import {Modal,Alert,Dropdown,DropdownMenu,DropdownItem,DropdownToggle, Card, CardBody, Button} from 'reactstrap'
 import moment from 'moment';
 import lodash from 'lodash'
 
@@ -9,12 +9,27 @@ import lodash from 'lodash'
 
 
 
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    maxWidth             : '800px',
+    maxHeight            : '700px'
+  }
+};
+
 
 class CutManifest extends React.Component {
   constructor(props,context) {
       super(props,context);
       this.toggleDropdown = this.toggleDropdown.bind(this);
 
+      this.openModal = this.openModal.bind(this);
+      this.closeModal = this.closeModal.bind(this);
       this.toggleDayDropdown = this.toggleDayDropdown.bind(this);
       this.selectDay = this.selectDay.bind(this);
       this.selectCrewLead = this.selectCrewLead.bind(this);
@@ -23,7 +38,10 @@ class CutManifest extends React.Component {
 
     }
 
+
+
   state = {
+    modalIsOpen: false,
       dropdownOpen: false,
       dayDropdownOpen: false,
       crewLeads: [],
@@ -112,6 +130,18 @@ class CutManifest extends React.Component {
     }));
   }
 
+  openModal(){
+    this.setState({modalIsOpen: true});
+  }
+
+  closeModal(){
+    this.setState({modalIsOpen: false});
+    }
+
+    afterOpenModal(){
+
+    }
+
   selectCrewLead(event) {
 
     var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
@@ -169,6 +199,18 @@ class CutManifest extends React.Component {
     })
     return(
       <div>
+      <div>
+      <Modal
+       isOpen={this.state.modalIsOpen}
+       onRequestClose={this.closeModal}
+       ariaHideApp={false}
+       style={customStyles}
+       contentLabel="Address Details">
+
+       Hey
+         </Modal>
+
+      </div>
       <Card>
           <CardBody>
             <Row>
@@ -221,7 +263,9 @@ class CutManifest extends React.Component {
             <Col>
                 <ul>
                   {this.state.filteredAddresses.map((address)=>{
-                    return <li> {address.formattedAddress} - {address.customer} - {address.day}</li>
+                    return <li>
+
+                    <Alert onClick={this.openModal} color="secondary"> {address.formattedAddress} - {address.customer} - {address.day}</Alert></li>
                   })}
                 </ul>
             </Col>
