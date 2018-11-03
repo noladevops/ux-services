@@ -20,6 +20,7 @@ class CutManifest extends React.Component {
       this.selectCrewLead = this.selectCrewLead.bind(this);
       this.addressFilterChange = this.addressFilterChange.bind(this);
       this.customerFilterChange = this.customerFilterChange.bind(this);
+
     }
 
   state = {
@@ -37,6 +38,7 @@ class CutManifest extends React.Component {
       filteredCustomers:[],
       activeCustomers: [],
       selectedCustomer: [],
+      crewAddresses: [],
       customerSearchText: [],
       addressSearchText: [],
       days: [],
@@ -115,14 +117,14 @@ class CutManifest extends React.Component {
     var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
     this.setState( {selectedCrewLead:  crewLead });
     var crewAddresses = lodash.filter(this.state.activeAddresses, x => x.lead === crewLead._id);
-    this.setState( {customerFilter: "", addressFilter:"",filteredAddresses: crewAddresses,filterEchoText: event.target.innerText + " - " + crewAddresses.length + " addresses",selectedDay: {name: "all days"}});
+    this.setState( {customerFilter: "", addressFilter:"",crewAddresses: crewAddresses,filteredAddresses: crewAddresses,filterEchoText: event.target.innerText + " - " + crewAddresses.length + " addresses",selectedDay: {name: "all days"}});
 
   }
 
   selectDay(event){
     var day = lodash.filter(this.state.days, x => x.name === event.target.innerText)[0];
     this.setState( {selectedDay:  day });
-    var dayAddresses = lodash.filter(this.state.filteredAddresses, x => x.cutDay === day._id);
+    var dayAddresses = lodash.filter(this.state.crewAddresses, x => x.cutDay === day._id);
     this.setState( {customerFilter: "", addressFilter:"",filteredAddresses: dayAddresses,filterEchoText: event.target.innerText + " - " + dayAddresses.length + " addresses"});
   }
 
