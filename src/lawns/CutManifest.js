@@ -1,7 +1,9 @@
 import React from 'react';
 import './CutManifest.css';
 import {Row,Col, InputGroup,Input,InputGroupAddon} from 'reactstrap';
-import {Modal,Alert,Dropdown,DropdownMenu,DropdownItem,DropdownToggle, Card, CardBody, Button} from 'reactstrap'
+import Modal from 'react-modal'
+import AddressEditor from './AddressEditor';
+import {Alert,Dropdown,DropdownMenu,DropdownItem,DropdownToggle, Card, CardBody, Button} from 'reactstrap';
 import moment from 'moment';
 import lodash from 'lodash'
 
@@ -27,8 +29,7 @@ class CutManifest extends React.Component {
   constructor(props,context) {
       super(props,context);
       this.toggleDropdown = this.toggleDropdown.bind(this);
-
-      this.openModal = this.openModal.bind(this);
+    this.openModal = this.openModal.bind(this);
       this.closeModal = this.closeModal.bind(this);
       this.toggleDayDropdown = this.toggleDayDropdown.bind(this);
       this.selectDay = this.selectDay.bind(this);
@@ -41,6 +42,7 @@ class CutManifest extends React.Component {
 
 
   state = {
+    selectedAddress: {latitude:0, longitude:0},
     modalIsOpen: false,
       dropdownOpen: false,
       dayDropdownOpen: false,
@@ -130,24 +132,33 @@ class CutManifest extends React.Component {
     }));
   }
 
-  openModal(){
+  openModal(obj,event){
     this.setState({modalIsOpen: true});
+    fetch("/api/addresses/" + obj)
+    .then( response => {
+      if (!response.ok) { throw new Error(response) }
+      return response.json()  //we only get here if there is no error
+    })
+    .then( (json) => {
+        console.log(json.data);
+        this.setState({selectedAddress: json.data});
+     });
   }
 
   closeModal(){
-    this.setState({modalIsOpen: false});
-    }
+      this.setState({modalIsOpen: false});
+  }
 
     afterOpenModal(){
 
     }
 
-  selectCrewLead(event) {
+    selectCrewLead(event) {
 
-    var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
-    this.setState( {selectedCrewLead:  crewLead });
-    var crewAddresses = lodash.filter(this.state.activeAddresses, x => x.lead === crewLead._id);
-    this.setState( {customerFilter: "", addressFilter:"",crewAddresses: crewAddresses,filteredAddresses: crewAddresses,filterEchoText: event.target.innerText + " - " + crewAddresses.length + " addresses",selectedDay: {name: "all days"}});
+      var crewLead = lodash.filter(this.state.crewLeads, x => x.name === event.target.innerText)[0];
+      this.setState( {selectedCrewLead:  crewLead });
+      var crewAddresses = lodash.filter(this.state.activeAddresses, x => x.lead === crewLead._id);
+      this.setState( {customerFilter: "", addressFilter:"",crewAddresses: crewAddresses,filteredAddresses: crewAddresses,filterEchoText: event.target.innerText + " - " + crewAddresses.length + " addresses",selectedDay: {name: "all days"}});
 
   }
 
@@ -202,12 +213,13 @@ class CutManifest extends React.Component {
       <div>
       <Modal
        isOpen={this.state.modalIsOpen}
+       onAfterOpen={this.afterOpenModal}
        onRequestClose={this.closeModal}
        ariaHideApp={false}
        style={customStyles}
        contentLabel="Address Details">
 
-       Hey
+          <AddressEditor selectedAddress={this.state.selectedAddress} />
          </Modal>
 
       </div>
@@ -235,7 +247,7 @@ class CutManifest extends React.Component {
                 </Dropdown>
                 </Col>
                 <Col>
-                  <Alert color="primary">
+                  <Alert color="primary" >
                       {this.state.selectedCrewLead.name + " - " + this.state.selectedDay.name}
                   </Alert>
                 </Col>
@@ -265,7 +277,7 @@ class CutManifest extends React.Component {
                   {this.state.filteredAddresses.map((address)=>{
                     return <li>
 
-                    <Alert onClick={this.openModal} color="secondary"> {address.formattedAddress} - {address.customer} - {address.day}</Alert></li>
+                    <Alert onClick={this.openModal.bind(null,address._id)} color="secondary"> {address.formattedAddress} - {address.customer} - {address.day}</Alert></li>
                   })}
                 </ul>
             </Col>
