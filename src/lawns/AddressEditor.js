@@ -14,6 +14,7 @@ class AddressEditor extends React.Component {
     this.toggleDayDropdown = this.toggleDayDropdown.bind(this);
     this.selectDay = this.selectDay.bind(this);
     this.selectCrewLead = this.selectCrewLead.bind(this);
+
     this.state = {dayDropdownOpen: false,
     dropdownOpen: false,
     crewLeads:[],
@@ -70,21 +71,22 @@ componentWillReceiveProps(newProps) {
   }
 
 selectDay(obj,evt){
+  console.log(obj);
 
 }
 selectCrewLead(obj,evt){
-
+  console.log(obj);
 }
 
 render(){
   let dropdownItems = this.state.crewLeads.map( (crewLead)=>{
     if (crewLead.name !== 'crew'){
-      return <DropdownItem onClick={this.selectCrewLead} key={crewLead._id}>{crewLead.name}</DropdownItem>
+      return <DropdownItem onClick={this.selectCrewLead.bind(null,crewLead)} key={crewLead._id}>{crewLead.name}</DropdownItem>
     } else { return}
   })
   let dayDropdownItems = this.state.days.map( (day)=>{
     if (day.name !== 'crew'){
-      return <DropdownItem onClick={this.selectDay} key={day._id}>{day.name}</DropdownItem>
+      return <DropdownItem onClick={this.selectDay.bind(null,day)} key={day._id}>{day.name}</DropdownItem>
     } else { return}
   })
   return(
@@ -104,7 +106,7 @@ render(){
         </Alert>
       </Col>
       <Col>
-        <Alert color="primary">Crew Lead: {this.state.selectedAddress.lead.name}<Button>Change</Button></Alert>
+        <Alert color="primary">Crew Lead: {this.state.selectedAddress.lead.name}
         <Dropdown size="sm"  isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown} >
           <DropdownToggle caret>
             Change
@@ -113,6 +115,7 @@ render(){
             {dropdownItems}
           </DropdownMenu>
         </Dropdown>
+        </Alert>
       </Col>
     </Row>
    <Row>
