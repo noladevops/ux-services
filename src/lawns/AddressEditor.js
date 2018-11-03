@@ -8,38 +8,111 @@ import {Alert,Dropdown,DropdownMenu,DropdownItem,DropdownToggle, Card, CardBody,
 
 
 class AddressEditor extends React.Component {
-
   constructor(props,context) {
     super(props,context);
-    this.state = {
-      selectedAddress: {
-        lat: 0,
-        lng: 0,
-        lead: {
-          name:""
-        },
-        cutDay:{
-          name:""
-        }
-
+    this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.toggleDayDropdown = this.toggleDayDropdown.bind(this);
+    this.selectDay = this.selectDay.bind(this);
+    this.selectCrewLead = this.selectCrewLead.bind(this);
+    this.state = {dayDropdownOpen: false,
+    dropdownOpen: false,
+    crewLeads:[],
+    days:[],
+    selectedAddress: {
+      lat: 0,
+      lng: 0,
+      lead: {
+        name:""
+      },
+      cutDay:{
+        name:""
       }
+
     }
   }
+}
+
+componentDidMount(){
+  fetch("/api/days", {credentials: "include" })
+  .then( response => {
+    if (!response.ok) { throw new Error(response) }
+    return response.json()  //we only get here if there is no error
+  })
+  .then( (json) => {
+      this.setState({days: json.data});
+  });
+  fetch("/api/crew/leads", {credentials: "include" })
+  .then( response => {
+    if (!response.ok) { throw new Error(response) }
+    return response.json()  //we only get here if there is no error
+  })
+  .then( (json) => {
+      this.setState({crewLeads: json.data});
+  });
+}
 
 componentWillReceiveProps(newProps) {
+      if(!newProps.selectedAddress.cutDay) newProps.selectedAddress.cutDay = {name: "Not Active"}
       this.setState({selectedAddress: newProps.selectedAddress});
   }
 
+  //dropdown methods
+  toggleDropdown() {
+    this.setState(prevState => ({
+      dropdownOpen: !prevState.dropdownOpen
+    }));
+  }
+
+  toggleDayDropdown() {
+    this.setState(prevState => ({
+      dayDropdownOpen: !prevState.dayDropdownOpen
+    }));
+  }
+
+selectDay(obj,evt){
+
+}
+selectCrewLead(obj,evt){
+
+}
+
 render(){
-  
+  let dropdownItems = this.state.crewLeads.map( (crewLead)=>{
+    if (crewLead.name !== 'crew'){
+      return <DropdownItem onClick={this.selectCrewLead} key={crewLead._id}>{crewLead.name}</DropdownItem>
+    } else { return}
+  })
+  let dayDropdownItems = this.state.days.map( (day)=>{
+    if (day.name !== 'crew'){
+      return <DropdownItem onClick={this.selectDay} key={day._id}>{day.name}</DropdownItem>
+    } else { return}
+  })
   return(
     <div>
     <Row>
       <Col>
-        <Alert color="primary">Cut Day: {this.state.selectedAddress.cutDay.name}<Button>Change</Button></Alert>
+        <Alert color="primary">
+        Cut Day: {this.state.selectedAddress.cutDay.name}
+        <Dropdown size="sm"  isOpen={this.state.dayDropdownOpen} toggle={this.toggleDayDropdown} >
+          <DropdownToggle caret>
+            Change
+          </DropdownToggle>
+          <DropdownMenu left>
+            {dayDropdownItems}
+          </DropdownMenu>
+        </Dropdown>
+        </Alert>
       </Col>
       <Col>
         <Alert color="primary">Crew Lead: {this.state.selectedAddress.lead.name}<Button>Change</Button></Alert>
+        <Dropdown size="sm"  isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown} >
+          <DropdownToggle caret>
+            Change
+          </DropdownToggle>
+          <DropdownMenu left>
+            {dropdownItems}
+          </DropdownMenu>
+        </Dropdown>
       </Col>
     </Row>
    <Row>
