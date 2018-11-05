@@ -27,6 +27,9 @@ class Login extends React.Component {
    this.openModal = this.openModal.bind(this);
    this.afterOpenModal = this.afterOpenModal.bind(this);
    this.closeModal = this.closeModal.bind(this);
+   this.sendLogin = this.sendLogin.bind(this);
+   this.loginChange = this.loginChange.bind(this);
+   this.passwordChange = this.passwordChange.bind(this);
   }
 
 
@@ -50,6 +53,7 @@ openModal() {
 
  sendLogin(event) {
    console.log("Sending U/P to log-in");
+   console.log(this.state.username);
    fetch('/api/auth', {
      method: 'POST',
      headers: {
@@ -57,14 +61,21 @@ openModal() {
        'Content-Type': 'application/json',
      },
      body: JSON.stringify({
-       username: 'hardcoded_harry',
-       password: '12345',
+       username: this.state.username,
+       password: this.state.password,
      })
    })
    .then( (err,res)=> {
      console.log(err);
    } )
  }
+
+loginChange(event){
+  this.setState({username: event.target.value});
+}
+passwordChange(event){
+  this.setState({password: event.target.value});
+}
 
 render() {
   return (
@@ -79,11 +90,11 @@ render() {
          <Form>
            <FormGroup>
              <Label for="exampleEmail">Email</Label>
-             <Input type="email" name="email" id="usernameInput" placeholder="username" />
+             <Input type="email" name="email" id="usernameInput" placeholder="username" onChange={this.loginChange} />
            </FormGroup>
            <FormGroup>
              <Label for="examplePassword">Password</Label>
-             <Input type="password" name="password" id="passwordInput" placeholder="password" />
+             <Input type="password" name="password" id="passwordInput" placeholder="password" onChange={this.passwordChange} />
            </FormGroup>
            <FormGroup>
               <Button onClick={this.sendLogin.bind(this)}>Submit</Button>{' '}
