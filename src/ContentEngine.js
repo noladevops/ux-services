@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import Home from './lawns/Home';
 import Addresses from './lawns/Addresses';
 import Customers from './lawns/Customers';
 import CutManifest from './lawns/CutManifest';
@@ -15,7 +16,7 @@ class ContentEngine extends React.Component {
     super(props);
     this.toggle = this.toggle.bind(this);
     this.state = {
-      activeTab: '4'
+      activeTab: '6'
     };
   }
   toggle(tab) {
@@ -31,6 +32,14 @@ class ContentEngine extends React.Component {
     return(
       <div >
           <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '6' })}
+              onClick={() => { this.toggle('6'); }}
+            >
+              Home
+            </NavLink>
+          </NavItem>
           <NavItem>
             <NavLink
               className={classnames({ active: this.state.activeTab === '4' })}
@@ -73,7 +82,9 @@ class ContentEngine extends React.Component {
               </NavItem>
             </Nav>
             <TabContent activeTab={this.state.activeTab} >
-
+            <TabPane tabId="6">
+              <Home />
+            </TabPane>
               <TabPane tabId="4">
                 <CutManifest />
               </TabPane>
