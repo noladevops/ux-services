@@ -53,7 +53,7 @@ openModal() {
 
  sendLogin(event) {
    console.log("Sending U/P to log-in");
-   console.log(this.state.username);
+   console.log(this.state.username + " " +  this.state.password);
    fetch('/api/auth', {
      method: 'POST',
      headers: {
