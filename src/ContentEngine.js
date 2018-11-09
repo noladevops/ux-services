@@ -15,17 +15,19 @@ class ContentEngine extends React.Component {
 
 
   componentDidMount(){
-    fetch('/api/auth/whoami')
-    fetch("/api/addresses", {credentials: "include" })
+    fetch('/api/auth/whoami', {credentials: "include" })
     .then( response => {
-      if (!response.ok) { throw new Error(response) }
+      if (!response.ok) { console.log(response.data.message); throw new Error(response.data.message) }
       return response.json()  //we only get here if there is no error
     })
     .then( (json)=>{
       console.log(json);
-      console.log("Confirmed user logged in");
-      this.setState({isLoggedIn:true,loginChecked:true});
-
+      if (json.status===401) {
+        this.setState({loginChecked:true});
+      } else {
+        console.log("Confirmed user logged in");
+        this.setState({isLoggedIn:true,loginChecked:true});
+      }
     })
     .catch( (err)=>{
       console.log(err);
@@ -47,6 +49,7 @@ class ContentEngine extends React.Component {
       content = <Login />
     } else {
       content = <LawnsMaster />
+
     }
 
     return(

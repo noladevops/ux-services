@@ -93,7 +93,7 @@ class LawnsMaster extends React.Component {
           </TabPane>
 
           <TabPane tabId="1">
-            <Addresses />
+
           </TabPane>
 
           <TabPane tabId="3">
