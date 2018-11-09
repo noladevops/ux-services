@@ -9,29 +9,28 @@ class ContentEngine extends React.Component {
 
   constructor(props){
     super(props);
-    this.state = {isLoggedIn:false,loginChecked:false, loginHidden:false,lawnsMasterHidden:true}
+    this.state = {authenticationStatus:"Please Log in",isLoggedIn:false,loginChecked:false, loginHidden:false,lawnsMasterHidden:true}
   }
-
-
 
   componentDidMount(){
     fetch('/api/auth/whoami', {credentials: "include" })
     .then( response => {
-      if (!response.ok) { console.log(response.data.message); throw new Error(response.data.message) }
+      if (!response.ok) {
+         // console.log(response.data.message);
+         throw new Error(response.data.message) }
       return response.json()  //we only get here if there is no error
     })
     .then( (json)=>{
-      console.log(json);
+      console.log("WhoAmi response: " + json.message);
       if (json.status===401) {
-        this.setState({loginChecked:true});
+        this.setState({loginChecked:true,loginMessage:"Please Log In"});
       } else {
-        console.log("Confirmed user logged in");
-        this.setState({isLoggedIn:true,loginChecked:true});
+        this.setState({isLoggedIn:true,loginChecked:true,loginMessage:"Login Sucessful"});
       }
     })
     .catch( (err)=>{
-      console.log(err);
-      this.setState({loginChecked:true});
+      console.log("Respojkbkjbnse: \n");
+      this.setState({loginChecked:true,loginMessage:"Please Log In"});
     })
   }
 
@@ -46,7 +45,11 @@ class ContentEngine extends React.Component {
 
     let content;
     if(!this.state.isLoggedIn) {
-      content = <Login />
+      content = <div>
+                  <Login authenticationStatus={this.state.authenticationStatus} />
+                </div>
+
+
     } else {
       content = <LawnsMaster />
 

@@ -22,7 +22,8 @@ class Login extends React.Component {
   constructor(props,context) {
     super(props,context);
     this.state = {
-     modalIsOpen: false
+     modalIsOpen: false,
+     loginMessage: props.loginMessage
    };
    this.openModal = this.openModal.bind(this);
    this.afterOpenModal = this.afterOpenModal.bind(this);
@@ -32,6 +33,14 @@ class Login extends React.Component {
    this.passwordChange = this.passwordChange.bind(this);
   }
 
+static getDerivedStateFromProps(nextProps,prevState){
+    console.log("Next Login Message: " + nextProps.authenticationStatus);
+    if(nextProps.authenticationStatus!==prevState.authenticationStatus){
+      return {authenticationStatus: nextProps.authenticationStatus };
+  } else {
+    return { authenticationStatus: prevState.authenticationStatus}
+  }
+}
 
   componentDidMount() {
       this.setState({modalIsOpen: true});
@@ -65,9 +74,20 @@ openModal() {
        password: this.state.password,
      })
    })
-   .then( (err,res)=> {
-     console.log(err);
-   } )
+   .then( (json)=>{
+     console.log("Login Response: " + JSON.stringify(json));
+     if (json.status===401) {
+       this.setState({loginChecked:true,loginMessage:"Login Failed"});
+     } else if (json.status===200) {
+       this.setState({isLoggedIn:true,loginChecked:true,loginMessage:"Login Sucessful"});
+     } else {
+        this.setState({loginChecked:true,loginMessage:"Error Logging In, please contact us"});
+     }
+   })
+   .catch( (err)=>{
+     // console.log("Respojkbkjbnse: \n" + err);
+     this.setState({loginChecked:true,loginMessage:"Error Logging In"});
+   })
  }
 
 loginChange(event){
@@ -98,6 +118,10 @@ render() {
            </FormGroup>
            <FormGroup>
               <Button onClick={this.sendLogin.bind(this)}>Submit</Button>{' '}
+           </FormGroup>
+           <FormGroup>
+            {this.state.loginMessage} <br />
+            {this.state.authenticationStatus}
            </FormGroup>
         </Form>
         </Modal>
